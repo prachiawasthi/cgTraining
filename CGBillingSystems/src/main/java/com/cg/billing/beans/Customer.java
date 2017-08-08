@@ -20,7 +20,7 @@ public class Customer {
 	@Id
 	@GeneratedValue(strategy=GenerationType.TABLE)
 	private int customerID;
-	private String firstName, lastName, emailID, dateOfBirth, password;
+	private String firstName, lastName, emailID, dateOfBirth,password;
 	
 	@Embedded
 	private Address address;

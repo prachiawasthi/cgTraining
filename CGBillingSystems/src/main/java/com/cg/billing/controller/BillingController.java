@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cg.billing.beans.Customer;
 import com.cg.billing.exceptions.BillingServicesDownException;
+import com.cg.billing.exceptions.CustomerDetailsNotFoundException;
 import com.cg.billing.services.IBillingServices;
 
 @RestController
@@ -26,10 +27,10 @@ public class BillingController {
 		
 	}
 	
-	@RequestMapping(value="/acceptCustomerDetail",method=RequestMethod.POST,consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<String>acceptProductDetail(@ModelAttribute int customerId) throws BillingServicesDownException{
-		services.deleteCustomer(customerId);
-		return new ResponseEntity<>("Customer details succesfully deleted",HttpStatus.OK);
+	@RequestMapping(value="/showCustomerDetail",method=RequestMethod.GET,consumes=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<String>getCustomerDetails(@ModelAttribute Customer customer) throws CustomerDetailsNotFoundException, BillingServicesDownException{
+		services.acceptCustomerDetails(customer);
+		return new ResponseEntity<>("Customer details succesfully added",HttpStatus.OK);
 		
 	}
 

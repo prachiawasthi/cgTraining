@@ -2,7 +2,6 @@ package com.cg.billing.beans;
 
 import javax.persistence.Embeddable;
 
-
 @Embeddable
 public class Address {
 	private String city, state;
