@@ -12,24 +12,24 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 public class PostpaidAccount {
-
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
+	@GeneratedValue(strategy=GenerationType.TABLE)
 	private long mobileNo;
-
+	
 	@Embedded
 	private Plan plan;
-
+	
 	@ManyToOne
+	@JoinColumn(name="customerID")
 	private Customer customer;
-
-	@OneToMany(mappedBy = "postpaidaccount", cascade = CascadeType.ALL)
-	@JsonIgnore
+	
+	@OneToMany(mappedBy = "postpaidaccount" , cascade = CascadeType.ALL)
 	private Map<Integer, Bill> bills = new HashMap<>();
 
 	public long getMobileNo() {
@@ -53,12 +53,14 @@ public class PostpaidAccount {
 	}
 
 	public void setBills(Bill bills) {
-		if (this.bills != null) {
-			this.bills.put((this.bills.size() + 1), bills);
-		} else {
-			System.out.println("null");
-		}
+		if(this.bills !=null){
+			this.bills .put((this.bills .size()+1),bills);	
+			}else
+			{
+				System.out.println("null");
+			}
 	}
+	
 
 	public Customer getCustomer() {
 		return customer;
@@ -78,11 +80,5 @@ public class PostpaidAccount {
 	public PostpaidAccount() {
 		super();
 	}
-
-	@Override
-	public String toString() {
-		return "PostpaidAccount [mobileNo=" + mobileNo + ", plan=" + plan + ", customer=" + customer + ", bills="
-				+ bills + "]";
-	}
-
+	
 }
