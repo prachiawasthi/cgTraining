@@ -97,6 +97,7 @@ public class BillingController {
 			@PathVariable("mobileNo") long mobileNo)
 			throws CustomerDetailsNotFoundException, BillingServicesDownException, PostpaidAccountNotFoundException {
 		boolean account = services.closeCustomerPostPaidAccount(customerID, mobileNo);
+		System.out.println("abcd");
 		if (account == false)
 			throw new PostpaidAccountNotFoundException(
 					"Postpaid Account details with Customer ID  " + customerID + "and mobile No. "+mobileNo+" not Found");
