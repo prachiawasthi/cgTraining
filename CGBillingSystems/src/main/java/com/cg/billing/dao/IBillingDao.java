@@ -16,7 +16,7 @@ public interface IBillingDao {
 		long insertPostPaidAccount(int customerID, PostpaidAccount account);
 		boolean updatePostPaidAccount(int customerID, PostpaidAccount account);
 		double insertMonthlybill(int customerID, long mobileNo, Bill bill);
-		int insertPlan(Plan plan) throws PlanDetailsNotFoundException;
+		int insertPlan(Plan plan) throws BillingServicesDownException;
 		boolean deletePostPaidAccount(int customerID, long mobileNo);
 		Bill getMonthlyBill(int customerID, long mobileNo, String billMonth);
 		List<Bill>getCustomerPostPaidAccountAllBills(int customerID, long mobileNo);
@@ -24,11 +24,10 @@ public interface IBillingDao {
 		Customer getCustomer(int customerID);
 		List<Customer>  getAllCustomers();
 	    List<Plan> getAllPlans();
-	    Plan getPlan(int planID) ;
 		PostpaidAccount getCustomerPostPaidAccount(int customerID, long mobileNo);
-		PostpaidAccount getPlanDetails(int customerID, long mobileNo) throws PostpaidAccountNotFoundException;
+		Plan getPlanDetails(int customerID, long mobileNo) throws PostpaidAccountNotFoundException;
 		boolean deleteCustomer(int customerID);
-	
+		Plan findPlan(int planID);
 
 }
 		

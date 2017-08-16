@@ -6,29 +6,33 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(name="mobileaccount")
 public class PostpaidAccount {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	private long mobileNo;
 
-	@Embedded
+	@OneToOne
 	private Plan plan;
 
 	@ManyToOne
 	private Customer customer;
 
-	@OneToMany(mappedBy = "postpaidaccount", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "postpaidaccount", orphanRemoval= true)
 	@JsonIgnore
 	private Map<Integer, Bill> bills = new HashMap<>();
 
@@ -55,9 +59,7 @@ public class PostpaidAccount {
 	public void setBills(Bill bills) {
 		if (this.bills != null) {
 			this.bills.put((this.bills.size() + 1), bills);
-		} else {
-			System.out.println("null");
-		}
+		} 
 	}
 
 	public Customer getCustomer() {

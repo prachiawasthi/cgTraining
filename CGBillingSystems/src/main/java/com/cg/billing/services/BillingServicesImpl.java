@@ -21,52 +21,21 @@ import com.cg.billing.exceptions.PostpaidAccountNotFoundException;
 @Service
 @Transactional
 public class BillingServicesImpl implements IBillingServices {
-	
+
 	@Autowired
 	BillingDaoImpl dao;
 
 	@Override
 	public List<Plan> getPlanAllDetails() throws BillingServicesDownException {
-		
+
 		return dao.getAllPlans();
 	}
 
 	@Override
 	public long openPostpaidMobileAccount(int customerID, int planId, PostpaidAccount account)
 			throws PlanDetailsNotFoundException, CustomerDetailsNotFoundException, BillingServicesDownException {
-		System.out.println("Service");
-		Plan plan=new Plan();
-		plan.setPlanID(planId);
-		if(planId==199){
-			plan.setFreeInternetDataUsageUnits(250);
-			plan.setFreeLocalCalls(100);
-			plan.setFreeLocalSMS(50);
-			plan.setFreeStdCalls(400);
-			plan.setFreeStdSMS(50);
-			plan.setInternetDataUsageRate(2.5f);
-			plan.setLocalCallRate(0.2f);
-			plan.setLocalSMSRate(1);
-			plan.setMonthlyRental(199);
-			plan.setPlanCircle("Delhi");
-			plan.setPlanName("199 Dhamakedar Plan");
-			plan.setStdCallRate(6.5f);
-			plan.setStdSMSRate(1.5f);
-		}
-		else if(planId==299){
-			plan.setFreeInternetDataUsageUnits(500);
-			plan.setFreeLocalCalls(400);
-			plan.setFreeLocalSMS(100);
-			plan.setFreeStdCalls(800);
-			plan.setFreeStdSMS(100);
-			plan.setInternetDataUsageRate(2.5f);
-			plan.setLocalCallRate(0.2f);
-			plan.setLocalSMSRate(1);
-			plan.setMonthlyRental(299);
-			plan.setPlanCircle("Delhi");
-			plan.setPlanName("299 Silver Plan");
-			plan.setStdCallRate(6.5f);
-			plan.setStdSMSRate(1.5f);
-		}
+
+		Plan plan = dao.findPlan(planId);
 		account.setPlan(plan);
 		return dao.insertPostPaidAccount(customerID, account);
 	}
@@ -77,33 +46,63 @@ public class BillingServicesImpl implements IBillingServices {
 			throws CustomerDetailsNotFoundException, PostpaidAccountNotFoundException, InvalidBillMonthException,
 			BillingServicesDownException, PlanDetailsNotFoundException {
 
-		return 0;
+		Plan plan = dao.getPlanDetails(customerID, mobileNo);
+		Bill bill = new Bill();
+
+		float amount = 0;
+
+		if (noOfLocalCalls > plan.getFreeLocalCalls())
+			bill.setLocalCallAmount((noOfLocalCalls - plan.getFreeLocalCalls()) * plan.getLocalCallRate());
+		amount = amount + bill.getLocalCallAmount();
+
+		if (noOfLocalSMS > plan.getFreeLocalSMS())
+			bill.setLocalSMSAmount((noOfLocalSMS - plan.getFreeLocalSMS()) * plan.getLocalSMSRate());
+		amount = amount + bill.getLocalSMSAmount();
+
+		if (noOfStdSMS > plan.getFreeStdSMS())
+			bill.setStdSMSAmount((noOfStdSMS - plan.getFreeStdSMS()) * plan.getStdSMSRate());
+		amount = amount + bill.getStdSMSAmount();
+
+		if (noOfStdCalls > plan.getFreeStdCalls())
+			bill.setStdCallAmount((noOfStdCalls - plan.getFreeStdCalls()) * plan.getStdCallRate());
+		amount = amount + bill.getStdCallAmount();
+
+		if (internetDataUsageUnits > plan.getFreeInternetDataUsageUnits())
+			bill.setInternetDataUsageAmount(
+					(internetDataUsageUnits - plan.getFreeInternetDataUsageUnits()) * plan.getInternetDataUsageRate());
+		amount = amount + bill.getInternetDataUsageAmount();
+
+		bill.setServicesTax((float) (0.1 * amount));
+		bill.setVat((float) (0.06 * amount));
+		bill.setTotalBillAmount(plan.getPlanID() + amount + bill.getServicesTax() + bill.getVat());
+
+		return dao.insertMonthlybill(customerID, mobileNo, bill);
 	}
 
 	@Override
 	public Customer getCustomerDetails(int customerID)
 			throws CustomerDetailsNotFoundException, BillingServicesDownException {
-	
+
 		return dao.getCustomer(customerID);
 	}
 
 	@Override
 	public List<Customer> getAllCustomerDetails() throws BillingServicesDownException {
-		
+
 		return dao.getAllCustomers();
 	}
 
 	@Override
 	public PostpaidAccount getPostPaidAccountDetails(int customerID, long mobileNo)
 			throws CustomerDetailsNotFoundException, PostpaidAccountNotFoundException, BillingServicesDownException {
-		
+
 		return dao.getCustomerPostPaidAccount(customerID, mobileNo);
 	}
 
 	@Override
 	public List<PostpaidAccount> getCustomerAllPostpaidAccountsDetails(int customerID)
 			throws CustomerDetailsNotFoundException, BillingServicesDownException {
-		
+
 		return dao.getCustomerPostPaidAccounts(customerID);
 	}
 
@@ -111,14 +110,14 @@ public class BillingServicesImpl implements IBillingServices {
 	public Bill getMobileBillDetails(int customerID, long mobileNo, String billMonth)
 			throws CustomerDetailsNotFoundException, PostpaidAccountNotFoundException, InvalidBillMonthException,
 			BillDetailsNotFoundException, BillingServicesDownException {
-		
+
 		return dao.getMonthlyBill(customerID, mobileNo, billMonth);
 	}
 
 	@Override
 	public List<Bill> getCustomerPostPaidAccountAllBillDetails(int customerID, long mobileNo)
 			throws CustomerDetailsNotFoundException, PostpaidAccountNotFoundException, BillingServicesDownException {
-		
+
 		return dao.getCustomerPostPaidAccountAllBills(customerID, mobileNo);
 	}
 
@@ -141,7 +140,7 @@ public class BillingServicesImpl implements IBillingServices {
 	}
 
 	@Override
-	public PostpaidAccount getCustomerPostPaidAccountPlanDetails(int customerID, long mobileNo)
+	public Plan getCustomerPostPaidAccountPlanDetails(int customerID, long mobileNo)
 			throws CustomerDetailsNotFoundException, PostpaidAccountNotFoundException, BillingServicesDownException,
 			PlanDetailsNotFoundException {
 		return dao.getPlanDetails(customerID, mobileNo);
@@ -149,7 +148,7 @@ public class BillingServicesImpl implements IBillingServices {
 
 	@Override
 	public Customer acceptCustomerDetails(Customer customer) throws BillingServicesDownException {
-		
+
 		return dao.insertCustomer(customer);
 	}
 
@@ -159,4 +158,8 @@ public class BillingServicesImpl implements IBillingServices {
 		return false;
 	}
 
+	@Override
+	public double insertMonthlybill(int customerID, long mobileNo, Bill bill) throws BillingServicesDownException {
+		return dao.insertMonthlybill(customerID, mobileNo, bill);
+	}
 }

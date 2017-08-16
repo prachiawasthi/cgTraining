@@ -1,10 +1,13 @@
 package com.cg.billing.beans;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-@Embeddable
+@Entity
 public class Plan {
 
+	@Id
 	private int planID;
 	private int monthlyRental, freeLocalCalls, freeStdCalls, freeLocalSMS, freeStdSMS, freeInternetDataUsageUnits;
 	private float localCallRate, stdCallRate, localSMSRate, stdSMSRate, internetDataUsageRate;
@@ -116,6 +119,15 @@ public class Plan {
 	}
 	public Plan() {
 		super();
+	}
+	@Override
+	public String toString() {
+		return "Plan [planID=" + planID + ", monthlyRental=" + monthlyRental + ", freeLocalCalls=" + freeLocalCalls
+				+ ", freeStdCalls=" + freeStdCalls + ", freeLocalSMS=" + freeLocalSMS + ", freeStdSMS=" + freeStdSMS
+				+ ", freeInternetDataUsageUnits=" + freeInternetDataUsageUnits + ", localCallRate=" + localCallRate
+				+ ", stdCallRate=" + stdCallRate + ", localSMSRate=" + localSMSRate + ", stdSMSRate=" + stdSMSRate
+				+ ", internetDataUsageRate=" + internetDataUsageRate + ", planCircle=" + planCircle + ", planName="
+				+ planName + "]";
 	}
 	
 	

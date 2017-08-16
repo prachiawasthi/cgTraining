@@ -60,14 +60,14 @@ public interface IBillingServices {
 		boolean deleteCustomer(int customerID) 
 				throws BillingServicesDownException, CustomerDetailsNotFoundException;
 		
-		PostpaidAccount getCustomerPostPaidAccountPlanDetails(int customerID, long mobileNo) 
+		Plan getCustomerPostPaidAccountPlanDetails(int customerID, long mobileNo) 
 				throws CustomerDetailsNotFoundException, PostpaidAccountNotFoundException, 
 				BillingServicesDownException, PlanDetailsNotFoundException ;
 
 		Customer acceptCustomerDetails(Customer customer)
 				throws BillingServicesDownException;
 
-		
+		public double insertMonthlybill(int customerID, long mobileNo, Bill bill) throws BillingServicesDownException;
 
 		boolean authenticateCustomer(Customer customer) throws CustomerDetailsNotFoundException, BillingServicesDownException;
 }

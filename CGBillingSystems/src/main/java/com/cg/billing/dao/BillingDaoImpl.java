@@ -40,52 +40,31 @@ public class BillingDaoImpl implements IBillingDao {
 		return account.getMobileNo();
 	}
 
-	@Override
-	public boolean updatePostPaidAccount(int customerID, PostpaidAccount account) {
-
-		return false;
-	}
 
 	@Override
-	public double insertMonthlybill(int customerID, long mobileNo, Bill bill) {
+	public int insertPlan(Plan plan) throws BillingServicesDownException {
 
-		PostpaidAccount postpaid = em.find(PostpaidAccount.class, mobileNo);
-		bill.setPostpaidaccount(postpaid);
-		em.persist(bill);
-		postpaid.setBills(bill);
-
-		return bill.getBillID();
-	}
-
-	@Override
-	public int insertPlan(Plan plan) throws PlanDetailsNotFoundException {
-
-		return 0;
+		em.persist(plan);
+		em.flush();
+		return plan.getPlanID();
 	}
 
 	@Override
 	public boolean deletePostPaidAccount(int customerID, long mobileNo) {
 		boolean result = false;
-		if(em.find(PostpaidAccount.class, customerID)  !=null && em.find(PostpaidAccount.class, mobileNo) !=null) {
-			System.out.println("dao exc mei no error");
+		System.out.println(em.find(Customer.class, customerID));
+		System.out.println(em.find(PostpaidAccount.class, mobileNo));
+		if (em.find(Customer.class, customerID) != null && em.find(PostpaidAccount.class, mobileNo) != null) {
+			PostpaidAccount acc = em.find(PostpaidAccount.class, mobileNo);
+			System.out.println("dao exc mei no error" + acc);
+			em.remove(acc);
+			em.flush();
 			result = true;
-			em.remove(getCustomerPostPaidAccount(customerID, mobileNo));
 		}
 		return result;
 	}
-
-	@Override
-	public Bill getMonthlyBill(int customerID, long mobileNo, String billMonth) {
-
-		return null;
-	}
-
-	@Override
-	public List<Bill> getCustomerPostPaidAccountAllBills(int customerID, long mobileNo) {
-
-		return null;
-	}
-
+	
+	
 	@Override
 	public List<PostpaidAccount> getCustomerPostPaidAccounts(int customerID) {
 
@@ -104,7 +83,6 @@ public class BillingDaoImpl implements IBillingDao {
 
 	@Override
 	public Customer getCustomer(int customerID) {
-
 		Customer customer = em.find(Customer.class, customerID);
 		return customer;
 	}
@@ -120,20 +98,19 @@ public class BillingDaoImpl implements IBillingDao {
 	@Override
 	public List<Plan> getAllPlans() {
 
-		return null;
+		TypedQuery<Plan> query = em.createQuery("select p from Plan p", Plan.class);
+
+		return query.getResultList();
 	}
 
-	@Override
-	public Plan getPlan(int planID) {
-
-		return null;
-	}
 
 	@Override
-	public PostpaidAccount getPlanDetails(int customerID, long mobileNo) throws PostpaidAccountNotFoundException {
-
-		PostpaidAccount plan = em.find(PostpaidAccount.class, mobileNo);
-		return plan;
+	public Plan getPlanDetails(int customerID, long mobileNo) throws PostpaidAccountNotFoundException {
+		
+		TypedQuery<PostpaidAccount> query = em
+				.createQuery("select p from PostpaidAccount p where customer.customerID = " + customerID
+						+ " AND mobileNo = " + mobileNo, PostpaidAccount.class);
+		return query.getSingleResult().getPlan();
 	}
 
 	@Override
@@ -144,6 +121,40 @@ public class BillingDaoImpl implements IBillingDao {
 			em.remove(getCustomer(customerID));
 		}
 		return result;
+	}
+
+	@Override
+	public Plan findPlan(int planID) {
+		
+		return em.find(Plan.class, planID);
+	}
+	
+	@Override
+	public boolean updatePostPaidAccount(int customerID, PostpaidAccount account) {
+
+		return false;
+	}
+	
+	@Override
+	public double insertMonthlybill(int customerID, long mobileNo, Bill bill) {
+
+		PostpaidAccount postpaid = em.find(PostpaidAccount.class, mobileNo);
+		bill.setPostpaidaccount(postpaid);
+		postpaid.setBills(bill);
+		em.persist(bill);
+		return bill.getTotalBillAmount();
+	}
+	
+	@Override
+	public Bill getMonthlyBill(int customerID, long mobileNo, String billMonth) {
+
+		return null;
+	}
+
+	@Override
+	public List<Bill> getCustomerPostPaidAccountAllBills(int customerID, long mobileNo) {
+
+		return null;
 	}
 
 }

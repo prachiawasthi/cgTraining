@@ -27,7 +27,7 @@ public class Customer {
 	@Embedded
 	private Address address;
 	
-	@OneToMany(mappedBy = "customer" , cascade= CascadeType.ALL,fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "customer" ,orphanRemoval=true,fetch=FetchType.EAGER)
 	@JsonIgnore
 	Map<Long,PostpaidAccount> postpaidAccounts=new HashMap<>();
 	
