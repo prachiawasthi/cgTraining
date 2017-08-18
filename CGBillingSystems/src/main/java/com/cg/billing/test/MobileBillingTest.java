@@ -48,7 +48,7 @@ public class MobileBillingTest {
 		}
 		
 		@Before
-		public void setUpBillingData() throws BillingServicesDownException{
+		public void setUpBillingData() throws BillingServicesDownException, PostpaidAccountNotFoundException{
 			Bill bill1= new Bill(01, 5, 0, 9, 0, 9887, "jan", 500, 5, 0, 56, 0, 50, 50, 34, null);
 			Bill bill2= new Bill(02, 6, 0, 9, 0, 9887, "feb", 500, 5, 0, 56, 0, 50, 50, 34, null);
 			Bill bill3= new Bill(03, 7, 0, 9, 0, 9887, "march", 500, 5, 0, 56, 0, 50, 50, 34, null);

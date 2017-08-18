@@ -1,0 +1,46 @@
+apply plugin: 'java'
+apply plugin: 'war' 
+apply plugin: 'com.bmuschko.tomcat'
+
+repositories {
+    jcenter()
+}
+
+dependencies {   
+    testCompile 'junit:junit:4.12'    
+    providedCompile "javax.servlet:javax.servlet-api:3.1.0"      
+}
+ 
+dependencies {
+    def tomcatVersion = '7.0.59'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+           			"org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+					   "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+
+}
+
+tomcat{
+httpPort=8044
+}
+ 
+dependencies{
+	compile(
+			'org.springframework:spring-webmvc:4.1.4.RELEASE',
+			'org.springframework:spring-web:4.1.4.RELEASE',
+			'org.springframework:spring-core:4.1.4.RELEASE',
+			'org.springframework:spring-core:4.1.4.RELEASE',
+			'org.jvnet.ws.wadl:wadl-core:1.1.6',
+			'org.jvnet.ws.wadl:wadl-client-plugin:1.1.6'
+	)
+}
+ 
+buildscript {
+    repositories {
+        jcenter()
+    }
+ 
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.2.2'
+    }
+	
+}
