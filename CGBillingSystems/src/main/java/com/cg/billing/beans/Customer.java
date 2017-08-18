@@ -16,57 +16,26 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name="Customer1")
+@Table(name = "Customer1")
 public class Customer {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.TABLE)
+	@GeneratedValue(strategy = GenerationType.TABLE)
 	private int customerID;
-	private String firstName, lastName, emailID, dateOfBirth,password;
-	
+	private String firstName, lastName, emailID, dateOfBirth, password;
+
 	@Embedded
 	private Address address;
-	
-	@OneToMany(mappedBy = "customer" ,orphanRemoval=true,fetch=FetchType.EAGER)
+
+	@OneToMany(mappedBy = "customer", orphanRemoval = true, fetch = FetchType.EAGER)
 	@JsonIgnore
-	Map<Long,PostpaidAccount> postpaidAccounts=new HashMap<>();
-	
-	public Customer() {}
-	
+	Map<Long, PostpaidAccount> postpaidAccounts = new HashMap<>();
 
-	public Customer(String firstName, String lastName, String emailID,
-			String dateOfBirth,Address address) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.emailID = emailID;
-		this.dateOfBirth = dateOfBirth;
-		this.address = address;
+	public Customer() {
 	}
 
-
-	public Customer(String firstName, String lastName, String emailID,
-			Address address) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.emailID = emailID;
-		this.address = address;
-	}
-
-	
-
-	public Customer(int customerID, String password) {
-		super();
-		this.customerID = customerID;
-		this.password = password;
-	}
-
-
-	public Customer(int customerID, String firstName, String lastName,
-			String emailID, String dateOfBirth, String password,
-			Address address,
-			HashMap<Long, PostpaidAccount> postpaidAccounts) {
+	public Customer(int customerID, String firstName, String lastName, String emailID, String dateOfBirth,
+			String password, Address address, HashMap<Long, PostpaidAccount> postpaidAccounts) {
 		super();
 		this.customerID = customerID;
 		this.firstName = firstName;
@@ -78,92 +47,107 @@ public class Customer {
 		this.postpaidAccounts = postpaidAccounts;
 	}
 
+	public Customer(int customerID, String firstName, String lastName, String emailID, String dateOfBirth,
+			String password) {
+		super();
+		this.customerID = customerID;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.emailID = emailID;
+		this.dateOfBirth = dateOfBirth;
+		this.password = password;
+	}
+
+	public Customer(String firstName, String lastName, String emailID, String dateOfBirth, String password) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.emailID = emailID;
+		this.dateOfBirth = dateOfBirth;
+		this.password = password;
+	}
+
+	public Customer(String firstName, String lastName, String emailID, String dateOfBirth, String password,
+			Address address, HashMap<Long, PostpaidAccount> postpaidAccounts) {
+		// TODO Auto-generated constructor stub
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.emailID = emailID;
+		this.dateOfBirth = dateOfBirth;
+		this.password = password;
+		this.address = address;
+		this.postpaidAccounts = postpaidAccounts;
+	}
 
 	public int getCustomerID() {
 		return customerID;
 	}
 
-
 	public void setCustomerID(int customerID) {
 		this.customerID = customerID;
 	}
-
 
 	public String getFirstName() {
 		return firstName;
 	}
 
-
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
-
 
 	public String getLastName() {
 		return lastName;
 	}
 
-
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-
 
 	public String getEmailID() {
 		return emailID;
 	}
 
-
 	public void setEmailID(String emailID) {
 		this.emailID = emailID;
 	}
-
 
 	public String getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-
 	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-
 
 	public String getPassword() {
 		return password;
 	}
 
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 
 	public Address getAddress() {
 		return address;
 	}
 
-
 	public void setAddress(Address address) {
 		this.address = address;
 	}
-
 
 	public Map<Long, PostpaidAccount> getPostpaidAccounts() {
 		return postpaidAccounts;
 	}
 
-
 	public void setPostpaidAccounts(PostpaidAccount postpaidAccounts) {
-		if(this.postpaidAccounts!=null){
-		this.postpaidAccounts.put((long) (this.postpaidAccounts.size()+1),postpaidAccounts);	
-		}else
-		{
+		if (this.postpaidAccounts != null) {
+			this.postpaidAccounts.put((long) (this.postpaidAccounts.size() + 1), postpaidAccounts);
+		} else {
 			System.out.println("null");
 		}
-		
-	}
 
+	}
 
 	@Override
 	public int hashCode() {
@@ -171,21 +155,14 @@ public class Customer {
 		int result = 1;
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + customerID;
-		result = prime * result
-				+ ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
+		result = prime * result + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
 		result = prime * result + ((emailID == null) ? 0 : emailID.hashCode());
-		result = prime * result
-				+ ((firstName == null) ? 0 : firstName.hashCode());
-		result = prime * result
-				+ ((lastName == null) ? 0 : lastName.hashCode());
-		result = prime * result
-				+ ((password == null) ? 0 : password.hashCode());
-		result = prime
-				* result
-				+ ((postpaidAccounts == null) ? 0 : postpaidAccounts.hashCode());
+		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((postpaidAccounts == null) ? 0 : postpaidAccounts.hashCode());
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -236,17 +213,10 @@ public class Customer {
 		return true;
 	}
 
-
 	@Override
 	public String toString() {
-		return "Customer [customerID=" + customerID + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", emailID=" + emailID
-				+ ", dateOfBirth=" + dateOfBirth + ", password=" + password
-				+ "]";
+		return "Customer [customerID=" + customerID + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", emailID=" + emailID + ", dateOfBirth=" + dateOfBirth + ", password=" + password + "]";
 	}
-
-
-	
-
 
 }
